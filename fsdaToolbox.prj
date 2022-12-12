@@ -1,7 +1,7 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
   <configuration file="C:\Users\bpancras\Documents\gitRepo\fsda\fsdaToolbox.prj" location="C:\Users\bpancras\Documents\gitRepo\fsda" name="fsdaToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>fsdaToolbox</param.appname>
-    <param.authnamewatermark />
+    <param.authnamewatermark>FSDA team</param.authnamewatermark>
     <param.email />
     <param.company />
     <param.summary />
