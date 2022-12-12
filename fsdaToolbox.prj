@@ -1,6 +1,6 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="C:\Users\bpancras\Documents\gitRepo\fsda\fsdaToolbox.prj" location="C:\Users\bpancras\Documents\gitRepo\fsda" name="fsdaToolbox" target="target.toolbox" target-name="Package Toolbox">
-    <param.appname>fsdaToolbox</param.appname>
+  <configuration file="C:\Users\bpancras\Documents\gitRepo\fsda\fsdatoolboxPacking.prj" location="C:\Users\bpancras\Documents\gitRepo\fsda" name="fsdatoolboxPacking" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>fsda</param.appname>
     <param.authnamewatermark>FSDA team</param.authnamewatermark>
     <param.email />
     <param.company />
@@ -8,12 +8,12 @@
     <param.description />
     <param.screenshot />
     <param.version>1.0</param.version>
-    <param.output>${PROJECT_ROOT}\fsdaToolbox.mltbx</param.output>
+    <param.output>${PROJECT_ROOT}\fsda.mltbx</param.output>
     <param.products.name />
     <param.products.id />
     <param.products.version />
     <param.platforms />
-    <param.guid>f9b9b1fd-3c56-4888-9cb0-de5aca76fc92</param.guid>
+    <param.guid>3ebd10dd-0597-4ebf-befc-e2fbb74ca967</param.guid>
     <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
 % from packaging.  Excludes should be listed relative to the toolbox folder.
 % Some examples of how to specify excludes are provided below:
@@ -32,14 +32,22 @@
 %
 % All files matching a pattern in all subfolders of the toolbox folder:
 % **/*.bak
+%
+404.md
 .gitignore
+.gitattributes
 .git
 404.md
 poster_FSDA.pdf
 info.xml
 eupllicense.pdf
 InstallationNotes.docx
-_automation_tools</param.exclude.filters>
+requirements.txt
+_automation_tools
+_development
+azure-pipelines.yml
+Copyright notice.pdf
+InstallationNotes.pdf</param.exclude.filters>
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples&gt;
@@ -85,7 +93,6 @@ _automation_tools</param.exclude.filters>
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
-      <param.authnamewatermark />
       <param.email />
       <param.company />
       <param.summary />
@@ -124,9 +131,7 @@ _automation_tools</param.exclude.filters>
       <file>${PROJECT_ROOT}</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}\_development</file>
       <file>${PROJECT_ROOT}\addFSDA2path.m</file>
-      <file>${PROJECT_ROOT}\azure-pipelines.yml</file>
       <file>${PROJECT_ROOT}\brushFAN.mlappinstall</file>
       <file>${PROJECT_ROOT}\brushRES.mlappinstall</file>
       <file>${PROJECT_ROOT}\brushROB.mlappinstall</file>
@@ -135,7 +140,6 @@ _automation_tools</param.exclude.filters>
       <file>${PROJECT_ROOT}\combinatorial</file>
       <file>${PROJECT_ROOT}\Contents.m</file>
       <file>${PROJECT_ROOT}\CONTRIBUTING.md</file>
-      <file>${PROJECT_ROOT}\Copyright notice.pdf</file>
       <file>${PROJECT_ROOT}\datasets</file>
       <file>${PROJECT_ROOT}\doc</file>
       <file>${PROJECT_ROOT}\docker</file>
@@ -145,7 +149,6 @@ _automation_tools</param.exclude.filters>
       <file>${PROJECT_ROOT}\FSDAdemos</file>
       <file>${PROJECT_ROOT}\graphics</file>
       <file>${PROJECT_ROOT}\helpfiles</file>
-      <file>${PROJECT_ROOT}\InstallationNotes.pdf</file>
       <file>${PROJECT_ROOT}\installFSDA.m</file>
       <file>${PROJECT_ROOT}\installHelpFiles.m</file>
       <file>${PROJECT_ROOT}\license.txt</file>
@@ -154,7 +157,7 @@ _automation_tools</param.exclude.filters>
       <file>${PROJECT_ROOT}\logoblue.jpg</file>
       <file>${PROJECT_ROOT}\multivariate</file>
       <file>${PROJECT_ROOT}\regression</file>
-      <file>${PROJECT_ROOT}\requirements.txt</file>
+      <file>${PROJECT_ROOT}\resources</file>
       <file>${PROJECT_ROOT}\runAllMyTestsFS.m</file>
       <file>${PROJECT_ROOT}\runAllMyTestsJenkins.m</file>
       <file>${PROJECT_ROOT}\utilities</file>
@@ -165,7 +168,7 @@ _automation_tools</param.exclude.filters>
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="fsdaToolbox.mltbx" optional="false">C:\Users\bpancras\Documents\gitRepo\fsda\fsdaToolbox.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="fsda.mltbx" optional="false">C:\Users\bpancras\Documents\gitRepo\fsda\fsda.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
