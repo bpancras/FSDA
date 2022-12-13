@@ -37,4 +37,4 @@ jobs:
           git config --global user.email "dhabensingh@gmail.com" && git config --global user.name "bpancras"
           git add fsda.mltbx
           git commit -m "Nightly build: fsda.mltbx"
-          git push
+          git push origin HEAD:main
