@@ -29,14 +29,11 @@ jobs:
         if: always()
         with:
           command: matlab.addons.toolbox.packageToolbox("fsdaToolbox.prj", "fsda.mltbx")
-        
-      - name: commit the mltbx file
-        if: always()
-        continue-on-error: true
-        run: |
-          git config --global user.email "dhabensingh@gmail.com" && git config --global user.name "bpancras"
-          git status
-          git branch -a
-          git add fsda.mltbx
-          git commit -m "Nightly build: fsda.mltbx"
-          git push
+      
+      # Save the MLTBX.
+      - name: Save Packaged Toolbox
+        uses: actions/upload-artifact@v3
+        with:
+          name: fsda.mltbx
+          path: release/fsda.mltbx
+
