@@ -34,6 +34,6 @@ jobs:
       - name: Save Packaged Toolbox
         uses: actions/upload-artifact@v3
         with:
-          name: fsda.mltbx
-          path: release/fsda.mltbx
+          name: FSDA build MLTBX
+          path: fsda.mltbx
 
