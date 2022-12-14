@@ -1,13 +1,12 @@
-# This is a basic workflow that is manually triggered
+# This is a workflow for building the MLTBX artifact and release it on GitHub
 
 name: Build MLTBX tag triggered
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
+# Start the workflow when a tag is created.
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "MLTBXBuild"
@@ -36,4 +35,11 @@ jobs:
         with:
           name: FSDA build MLTBX
           path: fsda.mltbx
-
+          
+      # Create the release
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true        
+          artifacts: "release/fsda.mltbx"
+          generateReleaseNotes: true
