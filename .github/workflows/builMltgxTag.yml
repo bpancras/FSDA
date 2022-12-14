@@ -29,17 +29,12 @@ jobs:
         with:
           command: matlab.addons.toolbox.packageToolbox("fsdaToolbox.prj", "fsda.mltbx")
       
-      # Save the MLTBX.
-      - name: Save Packaged Toolbox
-        uses: actions/upload-artifact@v3
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: FSDA build MLTBX
-          path: fsda.mltbx
-
-      # Create the release
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          draft: true        
-          artifacts: "fsda.mltbx"
-          generateReleaseNotes: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: fsda.mltbx
+          asset_name: fsda.mltbx
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "This is my release text"
