@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: Build MLTBX- tag triggered
+name: Build MLTBX tag triggered
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -32,7 +32,7 @@ jobs:
         
       - name: commit the mltbx file
         if: always()
-        continue-on-error: false
+        continue-on-error: true
         run: |
           git config --global user.email "dhabensingh@gmail.com" && git config --global user.name "bpancras"
           git status
