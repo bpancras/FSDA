@@ -412,11 +412,12 @@ end
 if k<=1
     error('FSDA:MixSim:Wrongk','Wrong number of mixture components k')
 end
+
 options= mixsimOptions;
 options.Rseed = 0;
-options.BarOmega = "";
-options.MaxOmega = "";
-options.StdOmega = "";
+% options.BarOmega = "";
+% options.MaxOmega = "";
+% options.StdOmega = "";
 options.restrfactor="";
 options.ecc      = 0.9;
 options.PiLow    = 0;
@@ -425,6 +426,8 @@ options.resN     = 100;
 options.tol      = [1e-06; 1e-06];
 options.lim      = 1e06;
 options.Display  = "notify";
+options.hom      = false;
+options.sph      = false;
 
 
 options=struct('R_seed', Rseeddef, 'BarOmega',BarOmegadef,'MaxOmega',MaxOmegadef,...
