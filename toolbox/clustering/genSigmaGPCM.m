@@ -168,7 +168,11 @@ function S=genSigmaGPCM(v, k, pa)
 %}
 
 %% Beginning of code
-
+arguments
+    v (1,1) int64 
+    k (1,1) int64
+    pa (1,3) char
+end
 exactrestr=isfield(pa,'exactrestriction')  && pa.exactrestriction==true;
 
 % S = 3d array which contains the covariance matriced of the groups
@@ -229,7 +233,13 @@ GAM2D=zeros(v,k);
 
 n=10;
 rho=2*rand(1)-1;
-chrho=chol(gallery('kms',v,rho));
+tmp=ones(1,v);
+for i=2:v
+    tmp(i)=rho^(i-1);
+end
+a=toeplitz(tmp);
+chrho=chol(a);
+% chrho=chol(gallery('kms',v,rho));
 
 
 if exactrestr==true
