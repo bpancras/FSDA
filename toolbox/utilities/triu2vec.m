@@ -131,7 +131,10 @@ function y=triu2vec(A,k)
 
 
 %% Beginning of code
-
+arguments
+    A (:,:) double
+    k (:,:) int64
+end
 if isscalar(A) && rem(A,1) == 0
     r=A;
     sizeA=[r, r];
