@@ -1,4 +1,4 @@
-function [out]  = MixSim(k,v,varargin)
+function [out]  = MixSim(k,v,options)
 %MixSim generates k clusters in v dimensions with given overlap
 %
 %<a href="matlab: docsearchFS('MixSim')">Link to the help function</a>
