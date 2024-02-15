@@ -397,7 +397,11 @@ function [out]  = MixSim(k,v,options)
 %}
 
 %% Beginning of code
-
+arguments
+    k (1,1) double
+    v (1,1) double
+    options (1,1) mixsimOptions
+end
 % User options
 
 % Default
@@ -494,25 +498,25 @@ lim      = options.lim;
 restrfactor= options.restrfactor;
 Display  = options.Display;
 
-if R_seed > 0
-    
-    % Check if a connection exists
-    global R_lInK_hANdle %#ok<TLEV>
-    if isempty(R_lInK_hANdle)
-        examp=which('Connect_Matlab_with_R_HELP.m');
-        % examp1=strrep(examp,'\','\\');
-        examp1=strrep(examp,filesep,[filesep filesep]);
-        
-        disp('To run MixSim independently from R, option R_seed must be 0');
-        disp('To ensure replicability of R examples contained in file demoMixSim.R');
-        disp('i.e. to use R random number generators, first run openR');
-        disp(['See instructions in file <a href="matlab:opentoline(''',examp1,''',5)">Connect_Matlab_with_R_HELP.m</a>']);
-        error('FSDA:MixSim:NoRConn','--------------------------');
-    end
-    
-    setseed = ['set.seed(' num2str(R_seed) ', kind=''Mersenne-Twister'', normal.kind = ''Inversion'')'];
-    [~] = evalR(setseed);
-end
+% if R_seed > 0
+% 
+%     % Check if a connection exists
+%     global R_lInK_hANdle %#ok<TLEV>
+%     if isempty(R_lInK_hANdle)
+%         examp=which('Connect_Matlab_with_R_HELP.m');
+%         % examp1=strrep(examp,'\','\\');
+%         examp1=strrep(examp,filesep,[filesep filesep]);
+% 
+%         disp('To run MixSim independently from R, option R_seed must be 0');
+%         disp('To ensure replicability of R examples contained in file demoMixSim.R');
+%         disp('i.e. to use R random number generators, first run openR');
+%         disp(['See instructions in file <a href="matlab:opentoline(''',examp1,''',5)">Connect_Matlab_with_R_HELP.m</a>']);
+%         error('FSDA:MixSim:NoRConn','--------------------------');
+%     end
+% 
+%     setseed = ['set.seed(' num2str(R_seed) ', kind=''Mersenne-Twister'', normal.kind = ''Inversion'')'];
+%     [~] = evalR(setseed);
+% end
 
 if ~islogical(sph) && ~isstruct(sph)
     error('FSDA:MixSim:Wrongsph','option sph must be a logical value or a structure')
