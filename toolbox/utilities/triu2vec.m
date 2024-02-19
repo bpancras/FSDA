@@ -157,7 +157,7 @@ else
 end
 
 if isempty(y)
-    disp(['Nothing to return on and above the ' num2str(k) 'th diagonal, for a matrix of order ' num2str(r) ' (being 0 the main diagonal)']);
+    disp(['Nothing to return on and above the ' sprintf('%d', int64(k)) 'th diagonal, for a matrix of order ' sprintf('%d', int64(r)) ' (being 0 the main diagonal)']);
 end
 
 end

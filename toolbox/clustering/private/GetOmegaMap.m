@@ -230,8 +230,8 @@ while ii < k
             
             % t is the value in which the cdf of the mixture of
             % non central chi2 must be evaluated.
-            t = const1(ii,jj) - Cnst1;
-            sigma = 2 * sqrt(Cnst1);
+            t = real(const1(ii,jj) - Cnst1);
+            sigma = real(2 * sqrt(Cnst1));
             
             % This is nothing but the cdf of the standard normal of
             % \Phi( \frac{log \pi_j^2/\pi_i^2 - \sum_{l=1}^v \delta_l^2}
@@ -267,8 +267,8 @@ while ii < k
             
             
             
-            t = const1(jj,ii) - Cnst1;
-            sigma = 2 * sqrt(Cnst1);
+            t = real(const1(jj,ii) - Cnst1);
+            sigma = real(2 * sqrt(Cnst1));
             
             OmegaMap(jj,ii)=normcdf(t,0,sigma);
             % This is equivalent to
@@ -325,331 +325,331 @@ while ii < k
             end
             
         end
-    else % non homogeneous clusters
-        sigma = 0.0;
-        if asympt == 0
-            
-            lij=squeeze(li(ii,jj,:));
-            dij=squeeze(di(ii,jj,:));
-            
-            lijne1=abs(lij-1)>toll;
-            
-            if sum(lijne1)==0
-                lijne1=true(v,1);
-            end
-            
-            % if sum(lijne1)<v there are eigenvalues which are  = 1
-            if sum(lijne1)<v
-                eigeq1=1;
-                lijeq1= (~lijne1);
-            else
-                eigeq1=0;
-            end
-            
-            if fix(ii) == 1
-                % Di = squeeze(di(ii,jj,lijne1));
-                Di = dij(lijne1);
-                if eigeq1==1
-                    Dieq1 = dij(lijeq1);
-                end
-                
-                if fix(jj) == 1
-                    % Li = squeeze(li(ii,jj,:));
-                    Li = lij(lijne1);
-                    Cnst1 = const1(ii,jj);
-                else
-                    % Li = squeeze(li(ii,jj,:))/ c;
-                    Li = lij(lijne1) / c;
-                    Cnst1 = const1(ii,jj) - v * log(c);
-                end
-                
-            else
-                
-                
-                % Di = squeeze(di(ii,jj,:)) / sqrt(c);
-                Di = dij(lijne1) / sqrt(c);
-                if eigeq1==1
-                    Dieq1 = dij(lijeq1)/sqrt(c);
-                end
-                
-                if fix(jj) == 1
-                    
-                    % Li = c * squeeze(li(ii,jj,:));
-                    Li = c * lij(lijne1);
-                    Cnst1 = const1(ii,jj) + v * log(c);
-                else
-                    % Li = squeeze(li(ii,jj,:));
-                    Li = lij(lijne1);
-                    Cnst1 = const1(ii,jj);
-                end
-                
-            end
-            
-            
-            
-            coef = Li - 1;
-            ldprod = Li.*Di;
-            const2 = (ldprod.*Di)./ coef;
-            % ncp = non centrality parameters
-            % The l-th element of ncl i=1, 2, ..., p is equal to
-            % \lambda_l^2 \delta_l^2 /(\lambda_l-1)^2
-            ncp = (ldprod./coef).^2;
-            % sum(const2)= \sum_{l=1}^p \lambda_l \delta_l^2 /(\lambda_l-1)
-            t = sum(const2)+ Cnst1;
-            
-            if eigeq1==1
-                sDieq1sq=sum(Dieq1.^2);
-                t= t - sDieq1sq;
-                % sigmaall= sigma+ 2*sum(Dieq1);
-                sigmaall= sigma+ 2*sqrt(sDieq1sq);
-            else
-                sigmaall=sigma;
-            end
-            
-            OmegaMap(ii,jj)=ncx2mixtcdf(t, df(1:sum(lijne1)), coef, ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
-            
-            lji=squeeze(li(jj,ii,:));
-            dji=squeeze(di(jj,ii,:));
-            ljine1=abs(lji-1)>toll;
-            
-            if sum(ljine1)==0
-                ljine1=true(v,1);
-            end
-            
-            if sum(ljine1)<v
-                eigeq1=1;
-                ljieq1= (~ljine1);
-            else
-                eigeq1=0;
-            end
-            
-            if fix(jj) == 1
-                % Di = squeeze(di(jj,ii,:));
-                Di = dji(ljine1);
-                if eigeq1==1
-                    Dieq1 = dji(ljieq1);
-                end
-                
-                if fix(ii) == 1
-                    % Li = squeeze(li(jj,ii,:));
-                    Li =  lji(ljine1);
-                    Cnst1 = const1(jj,ii);
-                else
-                    % Li = squeeze(li(jj,ii,:)) / c;
-                    Li =  lji(ljine1)/c;
-                    Cnst1 = const1(jj,ii) - v * log(c);
-                end
-                
-            else
-                
-                % Di = squeeze(di(jj,ii,:)) / sqrt(c);
-                Di = dji(ljine1) / sqrt(c);
-                if eigeq1==1
-                    Dieq1 = dji(ljieq1) / sqrt(c);
-                end
-                
-                if fix(ii) == 1
-                    % Li = c * squeeze(li(jj,ii,:));
-                    Li = c * lji(ljine1);
-                    
-                    Cnst1 = const1(jj,ii) + v * log(c);
-                else
-                    % Li = squeeze(li(jj,ii,:));
-                    Li = lji(ljine1);
-                    
-                    Cnst1 = const1(jj,ii);
-                end
-                
-            end
-            
-            coef = Li - 1.0;
-            ldprod = Li.*Di;
-            const2 = (ldprod.*Di)./ coef;
-            ncp = (ldprod./coef).^2;
-            t = sum(const2)+ Cnst1;
-            
-            if eigeq1==1
-                sDieq1sq=sum(Dieq1.^2);
-                t = t - sDieq1sq;
-                % sigmaall= sigma+ 2*sum(Dieq1);
-                sigmaall= sigma+ 2*sqrt(sDieq1sq);
-            else
-                sigmaall=sigma;
-            end
-            OmegaMap(jj,ii)=ncx2mixtcdf(t, df(1:sum(ljine1)), coef, ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
-            
-            OmegaOverlap = OmegaMap(ii,jj) + OmegaMap(jj,ii);
-            TotalOmega = TotalOmega + OmegaOverlap;
-            
-            if OmegaOverlap > MaxOmega
-                MaxOmega = OmegaOverlap;
-                rcMax(1) = ii;
-                rcMax(2) = jj;
-            end
-        else % asympt =1
-            lij=squeeze(li(ii,jj,:));
-            dij=squeeze(di(ii,jj,:));
-            
-            
-            lijne1=abs(lij-1)>toll;
-            if sum(lijne1)==0
-                lijne1=true(v,1);
-            end
-            % if sum(lijne1)<v there are eigenvalues which are  = 1
-            if sum(lijne1)<v
-                eigeq1=1;
-                lijeq1= (~lijne1);
-                % eigeq1=0;
-            else
-                eigeq1=0;
-            end
-            
-            
-            if fix(ii) == 1
-                
-                if fix(jj) == 1
-                    
-                    % Di = di(ii,jj,:);
-                    Di = dij(lijne1);
-                    
-                    if eigeq1==1
-                        Dieq1 = dij(lijeq1);
-                    end
-                    %Li = li(ii,jj,:);
-                    Li = lij(lijne1);
-                    
-                    
-                    coef = Li - 1.0;
-                    ldprod = Li.*Di;
-                    const2 = (ldprod.*Di)./coef;
-                    ncp = (ldprod./coef).^2;
-                    
-                    t = sum(const2) + const1(ii,jj);
-                    
-                    if eigeq1==1
-                        sDieq1sq=sum(Dieq1.^2);
-                        t = t - sDieq1sq;
-                        % sigmaall= sigma+ 2*sum(Dieq1);
-                        sigmaall= sigma+ 2*sqrt(sDieq1sq);
-                    else
-                        sigmaall=sigma;
-                    end
-                    OmegaMap(ii,jj)=ncx2mixtcdf(t, df(1:sum(lijne1)), coef, ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
-                    
-                    % OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
-                    
-                else
-                    % Because in this case Const1 is - \infty
-                    OmegaMap(ii,jj) = 0.0;
-                    
-                end
-                
-            else
-                if fix(jj) == 1
-                    % Because in this case
-                    % Pr(\infty * chi^2_1 (central) < (Const1 + log(\infty))=
-                    % Pr(chi^2_1 (central) < 0)=0
-                    OmegaMap(ii,jj) = 0.0;
-                    
-                else
-                    % If c \rightarrow \infty (asympt =1) and cluster are
-                    % heterogeneous (hom=0) the probability of overlapping
-                    % is \sum_{l=1}^k li(ii,jj,l) U_l \leq const1(ii,jj) = t
-                    % where U_l are independent (central) \chi^2_1 (with
-                    % one degree of freedom)
-                    Li = lij(lijne1);
-                    
-                    % coef = squeeze(li(ii,jj,:)) - 1.0;
-                    coef = Li - 1.0;
-                    
-                    ncp = zeros(sum(lijne1),1);
-                    
-                    t = const1(ii,jj);
-                    OmegaMap(ii,jj)=ncx2mixtcdf(t, df(1:sum(lijne1)), coef, ncp,'sigma',sigma,'lim',lim,'tol',tolncx2);
-                end
-            end
-            
-            lji=squeeze(li(jj,ii,:));
-            dji=squeeze(di(jj,ii,:));
-            ljine1=abs(lji-1)>toll;
-            
-            if sum(ljine1)==0
-                ljine1=true(v,1);
-            end
-            
-            if sum(ljine1)<v
-                eigeq1=1;
-                ljieq1= (~ljine1);
-            else
-                eigeq1=0;
-            end
-            
-            
-            % rows 508 and 509 of libOverlap.c
-            if fix(jj) == 1
-                
-                if fix(ii) == 1
-                    
-                    %  Di = squeeze(di(jj,ii,:));
-                    Di = dji(ljine1);
-                    
-                    if eigeq1==1
-                        Dieq1 = dji(ljieq1);
-                    end
-                    %Li = squeeze(li(jj,ii,:));
-                    Li = lji(ljine1);
-                    
-                    coef = Li - 1.0;
-                    ldprod = Li.*Di;
-                    const2 = (ldprod.*Di)./coef;
-                    ncp = (ldprod./coef).^2;
-                    t = sum(const2) + const1(jj,ii);
-                    
-                    if eigeq1==1
-                        sDieq1sq=sum(Dieq1.^2);
-                        t = t - sDieq1sq;
-                        % sigmaall= sigma+ 2*sum(Dieq1);
-                        sigmaall= sigma+ 2*sqrt(sDieq1sq);
-                        
-                    else
-                        sigmaall=sigma;
-                    end
-                    % 	OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
-                    OmegaMap(jj,ii)=ncx2mixtcdf(t, df(1:sum(ljine1)), coef,ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
-                    
-                else
-                    
-                    OmegaMap(jj,ii) = 0.0;
-                    
-                end
-                
-            else
-                
-                if fix(ii) == 1
-                    OmegaMap(jj,ii) = 0.0;
-                    
-                else
-                    % coef =  squeeze(li(jj,ii,:))- 1.0;
-                    Li = lji(ljine1);
-                    coef = Li - 1.0;
-                    ncp = zeros(sum(ljine1),1);
-                    t = const1(jj,ii);
-                    % OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
-                    OmegaMap(jj,ii)=ncx2mixtcdf(t, df(1:sum(ljine1)), coef, ncp,'sigma',sigma,'lim',lim,'tol',tolncx2);
-                    
-                end
-            end
-            
-            
-            OmegaOverlap = OmegaMap(ii,jj) + OmegaMap(jj,ii);
-            TotalOmega = TotalOmega + OmegaOverlap;
-            
-            if OmegaOverlap > MaxOmega
-                MaxOmega = OmegaOverlap;
-                rcMax(1) = ii;
-                rcMax(2) = jj;
-            end
-        end
+    % else % non homogeneous clusters
+    %     sigma = 0.0;
+    %     if asympt == 0
+    % 
+    %         lij=squeeze(li(ii,jj,:));
+    %         dij=squeeze(di(ii,jj,:));
+    % 
+    %         lijne1=abs(lij-1)>toll;
+    % 
+    %         if sum(lijne1)==0
+    %             lijne1=true(v,1);
+    %         end
+    % 
+    %         % if sum(lijne1)<v there are eigenvalues which are  = 1
+    %         if sum(lijne1)<v
+    %             eigeq1=1;
+    %             lijeq1= (~lijne1);
+    %         else
+    %             eigeq1=0;
+    %         end
+    % 
+    %         if fix(ii) == 1
+    %             % Di = squeeze(di(ii,jj,lijne1));
+    %             Di = dij(lijne1);
+    %             if eigeq1==1
+    %                 Dieq1 = dij(lijeq1);
+    %             end
+    % 
+    %             if fix(jj) == 1
+    %                 % Li = squeeze(li(ii,jj,:));
+    %                 Li = lij(lijne1);
+    %                 Cnst1 = const1(ii,jj);
+    %             else
+    %                 % Li = squeeze(li(ii,jj,:))/ c;
+    %                 Li = lij(lijne1) / c;
+    %                 Cnst1 = const1(ii,jj) - v * log(c);
+    %             end
+    % 
+    %         else
+    % 
+    % 
+    %             % Di = squeeze(di(ii,jj,:)) / sqrt(c);
+    %             Di = dij(lijne1) / sqrt(c);
+    %             if eigeq1==1
+    %                 Dieq1 = dij(lijeq1)/sqrt(c);
+    %             end
+    % 
+    %             if fix(jj) == 1
+    % 
+    %                 % Li = c * squeeze(li(ii,jj,:));
+    %                 Li = c * lij(lijne1);
+    %                 Cnst1 = const1(ii,jj) + v * log(c);
+    %             else
+    %                 % Li = squeeze(li(ii,jj,:));
+    %                 Li = lij(lijne1);
+    %                 Cnst1 = const1(ii,jj);
+    %             end
+    % 
+    %         end
+    % 
+    % 
+    % 
+    %         coef = Li - 1;
+    %         ldprod = Li.*Di;
+    %         const2 = (ldprod.*Di)./ coef;
+    %         % ncp = non centrality parameters
+    %         % The l-th element of ncl i=1, 2, ..., p is equal to
+    %         % \lambda_l^2 \delta_l^2 /(\lambda_l-1)^2
+    %         ncp = (ldprod./coef).^2;
+    %         % sum(const2)= \sum_{l=1}^p \lambda_l \delta_l^2 /(\lambda_l-1)
+    %         t = sum(const2)+ Cnst1;
+    % 
+    %         if eigeq1==1
+    %             sDieq1sq=sum(Dieq1.^2);
+    %             t= t - sDieq1sq;
+    %             % sigmaall= sigma+ 2*sum(Dieq1);
+    %             sigmaall= sigma+ 2*sqrt(sDieq1sq);
+    %         else
+    %             sigmaall=sigma;
+    %         end
+    % 
+    %         OmegaMap(ii,jj)=ncx2mixtcdf(t, df(1:sum(lijne1)), coef, ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
+    % 
+    %         lji=squeeze(li(jj,ii,:));
+    %         dji=squeeze(di(jj,ii,:));
+    %         ljine1=abs(lji-1)>toll;
+    % 
+    %         if sum(ljine1)==0
+    %             ljine1=true(v,1);
+    %         end
+    % 
+    %         if sum(ljine1)<v
+    %             eigeq1=1;
+    %             ljieq1= (~ljine1);
+    %         else
+    %             eigeq1=0;
+    %         end
+    % 
+    %         if fix(jj) == 1
+    %             % Di = squeeze(di(jj,ii,:));
+    %             Di = dji(ljine1);
+    %             if eigeq1==1
+    %                 Dieq1 = dji(ljieq1);
+    %             end
+    % 
+    %             if fix(ii) == 1
+    %                 % Li = squeeze(li(jj,ii,:));
+    %                 Li =  lji(ljine1);
+    %                 Cnst1 = const1(jj,ii);
+    %             else
+    %                 % Li = squeeze(li(jj,ii,:)) / c;
+    %                 Li =  lji(ljine1)/c;
+    %                 Cnst1 = const1(jj,ii) - v * log(c);
+    %             end
+    % 
+    %         else
+    % 
+    %             % Di = squeeze(di(jj,ii,:)) / sqrt(c);
+    %             Di = dji(ljine1) / sqrt(c);
+    %             if eigeq1==1
+    %                 Dieq1 = dji(ljieq1) / sqrt(c);
+    %             end
+    % 
+    %             if fix(ii) == 1
+    %                 % Li = c * squeeze(li(jj,ii,:));
+    %                 Li = c * lji(ljine1);
+    % 
+    %                 Cnst1 = const1(jj,ii) + v * log(c);
+    %             else
+    %                 % Li = squeeze(li(jj,ii,:));
+    %                 Li = lji(ljine1);
+    % 
+    %                 Cnst1 = const1(jj,ii);
+    %             end
+    % 
+    %         end
+    % 
+    %         coef = Li - 1.0;
+    %         ldprod = Li.*Di;
+    %         const2 = (ldprod.*Di)./ coef;
+    %         ncp = (ldprod./coef).^2;
+    %         t = sum(const2)+ Cnst1;
+    % 
+    %         if eigeq1==1
+    %             sDieq1sq=sum(Dieq1.^2);
+    %             t = t - sDieq1sq;
+    %             % sigmaall= sigma+ 2*sum(Dieq1);
+    %             sigmaall= sigma+ 2*sqrt(sDieq1sq);
+    %         else
+    %             sigmaall=sigma;
+    %         end
+    %         OmegaMap(jj,ii)=ncx2mixtcdf(t, df(1:sum(ljine1)), coef, ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
+    % 
+    %         OmegaOverlap = OmegaMap(ii,jj) + OmegaMap(jj,ii);
+    %         TotalOmega = TotalOmega + OmegaOverlap;
+    % 
+    %         if OmegaOverlap > MaxOmega
+    %             MaxOmega = OmegaOverlap;
+    %             rcMax(1) = ii;
+    %             rcMax(2) = jj;
+    %         end
+    %     else % asympt =1
+    %         lij=squeeze(li(ii,jj,:));
+    %         dij=squeeze(di(ii,jj,:));
+    % 
+    % 
+    %         lijne1=abs(lij-1)>toll;
+    %         if sum(lijne1)==0
+    %             lijne1=true(v,1);
+    %         end
+    %         % if sum(lijne1)<v there are eigenvalues which are  = 1
+    %         if sum(lijne1)<v
+    %             eigeq1=1;
+    %             lijeq1= (~lijne1);
+    %             % eigeq1=0;
+    %         else
+    %             eigeq1=0;
+    %         end
+    % 
+    % 
+    %         if fix(ii) == 1
+    % 
+    %             if fix(jj) == 1
+    % 
+    %                 % Di = di(ii,jj,:);
+    %                 Di = dij(lijne1);
+    % 
+    %                 if eigeq1==1
+    %                     Dieq1 = dij(lijeq1);
+    %                 end
+    %                 %Li = li(ii,jj,:);
+    %                 Li = lij(lijne1);
+    % 
+    % 
+    %                 coef = Li - 1.0;
+    %                 ldprod = Li.*Di;
+    %                 const2 = (ldprod.*Di)./coef;
+    %                 ncp = (ldprod./coef).^2;
+    % 
+    %                 t = sum(const2) + const1(ii,jj);
+    % 
+    %                 if eigeq1==1
+    %                     sDieq1sq=sum(Dieq1.^2);
+    %                     t = t - sDieq1sq;
+    %                     % sigmaall= sigma+ 2*sum(Dieq1);
+    %                     sigmaall= sigma+ 2*sqrt(sDieq1sq);
+    %                 else
+    %                     sigmaall=sigma;
+    %                 end
+    %                 OmegaMap(ii,jj)=ncx2mixtcdf(t, df(1:sum(lijne1)), coef, ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
+    % 
+    %                 % OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+    % 
+    %             else
+    %                 % Because in this case Const1 is - \infty
+    %                 OmegaMap(ii,jj) = 0.0;
+    % 
+    %             end
+    % 
+    %         else
+    %             if fix(jj) == 1
+    %                 % Because in this case
+    %                 % Pr(\infty * chi^2_1 (central) < (Const1 + log(\infty))=
+    %                 % Pr(chi^2_1 (central) < 0)=0
+    %                 OmegaMap(ii,jj) = 0.0;
+    % 
+    %             else
+    %                 % If c \rightarrow \infty (asympt =1) and cluster are
+    %                 % heterogeneous (hom=0) the probability of overlapping
+    %                 % is \sum_{l=1}^k li(ii,jj,l) U_l \leq const1(ii,jj) = t
+    %                 % where U_l are independent (central) \chi^2_1 (with
+    %                 % one degree of freedom)
+    %                 Li = lij(lijne1);
+    % 
+    %                 % coef = squeeze(li(ii,jj,:)) - 1.0;
+    %                 coef = Li - 1.0;
+    % 
+    %                 ncp = zeros(sum(lijne1),1);
+    % 
+    %                 t = const1(ii,jj);
+    %                 OmegaMap(ii,jj)=ncx2mixtcdf(t, df(1:sum(lijne1)), coef, ncp,'sigma',sigma,'lim',lim,'tol',tolncx2);
+    %             end
+    %         end
+    % 
+    %         lji=squeeze(li(jj,ii,:));
+    %         dji=squeeze(di(jj,ii,:));
+    %         ljine1=abs(lji-1)>toll;
+    % 
+    %         if sum(ljine1)==0
+    %             ljine1=true(v,1);
+    %         end
+    % 
+    %         if sum(ljine1)<v
+    %             eigeq1=1;
+    %             ljieq1= (~ljine1);
+    %         else
+    %             eigeq1=0;
+    %         end
+    % 
+    % 
+    %         % rows 508 and 509 of libOverlap.c
+    %         if fix(jj) == 1
+    % 
+    %             if fix(ii) == 1
+    % 
+    %                 %  Di = squeeze(di(jj,ii,:));
+    %                 Di = dji(ljine1);
+    % 
+    %                 if eigeq1==1
+    %                     Dieq1 = dji(ljieq1);
+    %                 end
+    %                 %Li = squeeze(li(jj,ii,:));
+    %                 Li = lji(ljine1);
+    % 
+    %                 coef = Li - 1.0;
+    %                 ldprod = Li.*Di;
+    %                 const2 = (ldprod.*Di)./coef;
+    %                 ncp = (ldprod./coef).^2;
+    %                 t = sum(const2) + const1(jj,ii);
+    % 
+    %                 if eigeq1==1
+    %                     sDieq1sq=sum(Dieq1.^2);
+    %                     t = t - sDieq1sq;
+    %                     % sigmaall= sigma+ 2*sum(Dieq1);
+    %                     sigmaall= sigma+ 2*sqrt(sDieq1sq);
+    % 
+    %                 else
+    %                     sigmaall=sigma;
+    %                 end
+    %                 % 	OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+    %                 OmegaMap(jj,ii)=ncx2mixtcdf(t, df(1:sum(ljine1)), coef,ncp,'sigma',sigmaall,'lim',lim,'tol',tolncx2);
+    % 
+    %             else
+    % 
+    %                 OmegaMap(jj,ii) = 0.0;
+    % 
+    %             end
+    % 
+    %         else
+    % 
+    %             if fix(ii) == 1
+    %                 OmegaMap(jj,ii) = 0.0;
+    % 
+    %             else
+    %                 % coef =  squeeze(li(jj,ii,:))- 1.0;
+    %                 Li = lji(ljine1);
+    %                 coef = Li - 1.0;
+    %                 ncp = zeros(sum(ljine1),1);
+    %                 t = const1(jj,ii);
+    %                 % OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+    %                 OmegaMap(jj,ii)=ncx2mixtcdf(t, df(1:sum(ljine1)), coef, ncp,'sigma',sigma,'lim',lim,'tol',tolncx2);
+    % 
+    %             end
+    %         end
+    % 
+    % 
+    %         OmegaOverlap = OmegaMap(ii,jj) + OmegaMap(jj,ii);
+    %         TotalOmega = TotalOmega + OmegaOverlap;
+    % 
+    %         if OmegaOverlap > MaxOmega
+    %             MaxOmega = OmegaOverlap;
+    %             rcMax(1) = ii;
+    %             rcMax(2) = jj;
+    %         end
+    %     end
     end
     if jj < k
         jj = jj + 1;

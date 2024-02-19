@@ -432,15 +432,6 @@ if k<=1
     error('FSDA:MixSim:Wrongk','Wrong number of mixture components k')
 end
 
-mixSimOptions = MixSimOptions();
-mFields = fields(options);
-if ~isempty(mFields)
-    
-    for idx = 1:numel(mFields)
-        mixSimOptions.(mFields{idx}) = options.(mFields{idx}); 
-    end
-end
-
-out = MixSimCodeGen(k, v, mixSimOptions);
+mixSimOptions = MixSim
 end
 %FScategory:CLUS-MixSim

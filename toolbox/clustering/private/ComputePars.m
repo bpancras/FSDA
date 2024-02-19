@@ -155,9 +155,9 @@ if nargin==5
     end
 end
 
-li=zeros(k,k,v);
+li=complex(zeros(k,k,v));
 di=li;
-const1=zeros(k,k);
+const1=complex(zeros(k,k));
 
 for ii=1:k-1
     for jj=ii+1:k
