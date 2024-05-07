@@ -7,7 +7,7 @@ arguments
     options (1,1) addtOptions
 end
 
-[n,p]=size(X);
+[y,X,n,p] = correctData(y, X, options);
 
 la=options.la;
 plots=options.plots;
