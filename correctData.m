@@ -34,7 +34,7 @@ else
     
     
     % Now add to matrix X a column of ones for the intercept.
-    if nnargin <= stdargin
+    if true % This needs to be fixed nnargin <= stdargin
         
         % If the user has not specified a value for the intercept than add
         % a column of ones.
