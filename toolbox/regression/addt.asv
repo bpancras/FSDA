@@ -151,39 +151,200 @@ arguments
     w {validateW(y,w)}
     args.intercept (1,1) logical
     args.la (1,1) double
-    args.nocheck (1,1) logical
-    args.plots (1,1) double
-    args.FontSize (1,1) double
-    args.SizeAxesNum (1,1) double
-    args.textlab (1,1) logical
-    args.units (:,:) double
+    args.nocheck (1,1) logg
+    args.plots
+    args.FontSize
+    args.SizeAxesNum
+    args.textlab
+    args.units
 end
 
 if nargin<3
     error('FSDA:addt:missingInputs','A required input argument is missing.')
 end
 
-options = addtOptions();
-mFields = fields(args);
-if ~isempty(mFields)
+nnargin=nargin;
+vvarargin=varargin;
+[y,X,n,p] = aux.chkinputR(y,X,nnargin,vvarargin);
+
+% Insert code for intercept
+la=[];
+units=[]';
+textlab=false;
+FontSize=10;
+SizeAxesNum=10;
+nocheck=false;
+plots=0;
+
+
+if nargin > 3
     
-    for idx = 1:numel(mFields)
-        options.(mFields{idx}) = args.(mFields{idx}); 
+    if coder.target('MATLAB')
+        % the 'options' struct in this implementation is provided by the for loop
+        options=struct('intercept',true,'plots',plots,'la',la,'units',units,'textlab',textlab,...
+            'FontSize',FontSize,'SizeAxesNum',SizeAxesNum,'nocheck',nocheck);
+    end
+    
+    for i=1:2:(length(varargin)-1)
+        options.(varargin{i})=varargin{i+1};
+    end
+    
+    
+    la=options.la;
+    
+    if coder.target('MATLAB')
+        plots=options.plots;
+        units=options.units;
+        textlab=options.textlab;
+        
+        % FontSize = font size of the axes labels
+        FontSize =options.FontSize;
+        % FontSizeAxes = font size for the axes numbers
+        SizeAxesNum=options.SizeAxesNum;
+    end
+end
+%% t test for an additional explanatory variable
+
+[~, R] = qr(X,0);
+E = X/R;
+A = -E*E';
+sel=1:n;
+siz = size(A);
+% Find linear indexes
+% It is better to compute linind directly rather than calling sub2ind
+% linind=sub2ind(siz,sel,sel);
+linind = sel + (sel - 1).*siz(1);
+
+
+A(linind)=1+A(linind);
+% Notice that:
+% -E*E' = matrix -H = -X*inv(X'X)*X' computed through qr decomposition
+% A = Matrix I - H
+
+
+if ~isempty(la)
+    la1=la(1);
+    %geometric mean of the y
+    G=exp(mean(log(y)));
+    %  if la1==0
+    if la==0
+        z=G*log(y);
+    else
+        z=(y.^la1-1)/(la*G^(la1-1));
+    end
+else
+    z=y;
+end
+
+Az=A*z;
+r=z'*Az;
+Aw=A*w;
+zAw=z'*Aw;
+wAw=w'*Aw;
+
+if wAw <1e-12
+    Sz_square=NaN;
+    Tl=NaN;
+    b=NaN;
+    pval=NaN;
+    if coder.target('MATLAB')
+        warning('FSDA:addt:NearlySingularMatrix','The augmented X matrix is nearly singular');
+    end
+else
+    % b=regress(Az,Aw);
+    b=zAw/wAw;
+    
+    Sz=sqrt(r-zAw^2/wAw); % See Atkinson (1985) p. 98
+    Sz_square=Sz^2/(n-p-1);
+    
+    if abs(real(Sz)) > 0.0000001
+        % Compute t-statistic
+        Tl=zAw*sqrt(n-p-1)/(Sz*sqrt(wAw));
+        % Compute p-value of t-statistic
+        pval=2*(1-tcdf(abs(Tl),n-p-1));
+    else
+        Tl=NaN;
+        pval=NaN;
     end
 end
 
-out = addtCodeGen(y, X, w, options);
+
+% Store results in structure out.
+out.b=b;
+out.S2add=Sz_square;
+out.Tadd=Tl;
+out.pval=pval;
+
+
+%% Added variable plot
+
+if coder.target('MATLAB')
+    if plots==1
+        if ~isempty(units)
+            sel=setdiffFS(1:length(y),units);
+            [outsel]=addt(y(sel),X(sel,2:end),w(sel),'plots',0);
+            
+            plot(Aw(sel),Az(sel),'+b','MarkerSize',FontSize);
+            hold('on');
+            plot(Aw(units),Az(units),'or','MarkerSize',6,'MarkerFaceColor','r');
+            
+            xlimits = get(gca,'Xlim');
+            % Superimpose line based on all units
+            line(xlimits , b.*xlimits,'Color','r','LineWidth',2);
+            % Superimposed line based on reduced set of units
+            line(xlimits , outsel.b.*xlimits,'LineWidth',2);
+            if textlab==true
+                text(Aw(units)+0.05,Az(units),num2str(units),'FontSize',FontSize);
+            end
+            set(gca,'FontSize',SizeAxesNum)
+            
+            xlabel('Aw','Fontsize',FontSize);
+            ylabel('Ay','Fontsize',FontSize);
+            % Format for the legend
+            forleg='%11.3g';
+            forleg1='%3.2g';
+            
+            legend('Normal units','Excluded units',['Fit on all units tstat=' num2str(Tl,forleg) ' (pval=' num2str(pval,forleg1) ')'],...
+                ['Fit on subset tstat=' num2str(outsel.Tadd,forleg) ' (pval=' num2str(outsel.pval,forleg1) ')'])
+            hold('off');
+            
+            %olsline(2)
+        else
+            plot(Aw,Az,'+');
+            xlimits = get(gca,'Xlim');
+            % Superimpose line based on all units
+            line(xlimits, b.*xlimits,'LineWidth',3);
+            set(gca,'FontSize',SizeAxesNum)
+            
+            xlabel('Aw','Fontsize',FontSize);
+            ylabel('Ay','Fontsize',FontSize);
+            
+        end
+        
+        % Make the legends clickable.
+        hLines = findobj(gca, 'type', 'line');
+        eLegend = cell(length(hLines), 1);
+        for iLines = 1:length(hLines)
+            eLegend{iLines} = get(hLines(iLines), 'DisplayName');
+        end
+        clickableMultiLegend(hLines, eLegend{:});
+        
+        % and freeze the scaling at the current limits
+        axis(axis); % equivalent to "axis manual";
+        
+    end
+end
 end
 
 function validateY(y)
     [m,q]=size(y);
-    if min(m,q)>1 || isempty(y)
+    if min(m,q)>1
         error('FSDA:chkinputR:Wrongy','y is not one-dimensional.');
     end
 end
 
 function validateX(y, X)
-if ~ismatrix(X) || isempty(X)
+if ~ismatrix(X)
     error('FSDA:chkinputR:WrongX','Invalid data set X.');
 end
 
