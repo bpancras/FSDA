@@ -146,17 +146,10 @@ function [out]=addt(y,X,w,args)
 %% Beginning of code
 
 arguments
-    y {validateY(y)}
-    X {validateX(y,X)}
-    w {validateW(y,w)}
-    args.intercept (1,1) logical
-    args.la (1,1) double
-    args.nocheck (1,1) logical
-    args.plots (1,1) double
-    args.FontSize (1,1) double
-    args.SizeAxesNum (1,1) double
-    args.textlab (1,1) logical
-    args.units (:,:) double
+    y 
+    X 
+    w 
+    args.?addtOptions
 end
 
 if nargin<3

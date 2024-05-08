@@ -38,7 +38,7 @@ A(linind)=1+A(linind);
 % A = Matrix I - H
 
 
-if ~isempty(la)
+if ~isnan(la)
     la1=la(1);
     %geometric mean of the y
     G=exp(mean(log(y)));
