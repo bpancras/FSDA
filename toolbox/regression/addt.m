@@ -152,52 +152,13 @@ arguments
     args.?addtOptions
 end
 
-if nargin<3
-    error('FSDA:addt:missingInputs','A required input argument is missing.')
-end
+% options = createOptions('addt',args);
 
 options = addtOptions();
-mFields = fields(args);
-if ~isempty(mFields)
-    
-    for idx = 1:numel(mFields)
-        options.(mFields{idx}) = args.(mFields{idx}); 
-    end
+if ~isempty(fields(args))
+    options = copyProperties(args, options);
 end
-
-out = addtCodeGen(y, X, w, options);
-end
-
-function validateY(y)
-    [m,q]=size(y);
-    if min(m,q)>1 || isempty(y)
-        error('FSDA:chkinputR:Wrongy','y is not one-dimensional.');
-    end
-end
-
-function validateX(y, X)
-if ~ismatrix(X) || isempty(X)
-    error('FSDA:chkinputR:WrongX','Invalid data set X.');
-end
-
-if isequal(y,X)
-    error('FSDA:chkinputR:yXequal','Invalid input: y and X are equal.');
-end
-
-% Check dimension consistency of X and y
-na.X=~isfinite(X*ones(size(X,2),1));
-na.y=~isfinite(y);
-if size(na.X,1)~=size(na.y,1)
-    error('FSDA:chkinputR:NxDiffNy','Number of observations in X and y not equal.');
-end
-
-end
-
-function validateW(y,w)
-na.y=~isfinite(y);
-if size(w,1)~=size(na.y,1)
-    error('FSDA:chkinputR:NxDiffNy','Number of observations in X and y not equal.');
-end
+out = addtCore(y, X, w, options);
 end
 
 %FScategory:REG-Regression
