@@ -1,4 +1,10 @@
 function [y,X,n,p] = correctData(y, X, options)
+arguments
+    y (:, :) double
+    X (:, :) double
+    options (1,1) addtOptions
+end
+
 % If nocheck=true, then skip checks on y and X
 if options.nocheck
     [n,p]=size(X);
